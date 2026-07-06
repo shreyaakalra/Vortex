@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +8,78 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String   @unique
+  number          String   @unique
+  password        String
+  createdAt       DateTime @default(now())
+
+  balance              Balance?
+  onRampTransactions   OnRampTransaction[]
+  sentTransactions     Ledger[]            @relation("SentTransactions")
+  receivedTransactions Ledger[]            @relation("ReceivedTransactions")
+}
+
+model Balance {
+  id        Int      @id @default(autoincrement())
+  amount    Int
+  locked    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model OnRampTransaction {
+  id        Int          @id @default(autoincrement())
+  status    OnRampStatus
+  token     String       @unique
+  provider  String
+  amount    Int
+  startTime DateTime     @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  ledgerId Int?    @unique
+  ledger   Ledger? @relation(fields: [ledgerId], references: [id])
+}
+
+enum OnRampStatus {
+  Pending
+  Success
+  Failure
+}
+
+model Ledger {
+  id        Int             @id @default(autoincrement())
+  type      TransactionType
+  amount    Int
+  status    LedgerStatus
+  createdAt DateTime        @default(now())
+
+  fromUserId Int?
+  fromUser   User? @relation("SentTransactions", fields: [fromUserId], references: [id])
+
+  toUserId Int?
+  toUser   User? @relation("ReceivedTransactions", fields: [toUserId], references: [id])
+
+  onRampTransaction OnRampTransaction?
+}
+
+enum TransactionType {
+  ONRAMP
+  P2P
+  OFFRAMP
+}
+
+enum LedgerStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

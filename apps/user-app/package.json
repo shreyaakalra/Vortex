@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "@repo/ui": "*",
-    "@vortex/db": "*",
     "@tailwindcss/postcss": "^4.3.2",
+    "@vortex/db": "*",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
+    "framer-motion": "^12.42.2",
     "jsonwebtoken": "^9.0.3",
     "next": "16.2.0",
     "postcss": "^8.5.16",

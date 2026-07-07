@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-background: #0b0d0f;
+  --color-surface: #14171a;
+  --color-border: rgba(237, 234, 227, 0.08);
+  --color-foreground: #edeae3;
+  --color-muted: #8a8d91;
+  --color-signal: #3ecf6c;
+  --color-amber: #c98a3d;
+
+  --font-display: var(--font-display), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-mono: var(--font-mono), monospace;
+}
+
+body {
+  background-color: var(--color-background);
+}
+
+::selection {
+  background-color: var(--color-signal);
+  color: var(--color-background);
+}
+
 @source "../../../packages/ui/**/*.{js,ts,jsx,tsx,mdx}";
 
 :root {

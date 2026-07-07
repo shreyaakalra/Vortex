@@ -1,26 +1,26 @@
 import Link from "next/link";
+import Logo from "./Logo";
 
-export default function Navbar(){
-    return(
-        <div className="flex flex-row items-center justify-between px-4 border-b-2 border-b-white/40 h-15">
-            <Link href={"/"}>
-                <div className="text-2xl font-bold">
-                    PAYTM
-                </div>
-            </Link>
-            <div className="flex flex-row justify-center items-center gap-4">
-                <Link href={"/sign-up"}>
-                    <button className="border-2 bg-white text-black p-2 font-bold rounded-xl h-10 w-25">
-                        Sign Up
-                    </button>
-                </Link>
-                <Link href={"/sign-in"}>
-                    <button className="border-2 bg-white text-black p-2 font-bold rounded-xl h-10 w-25">
-                        Sign In
-                    </button>
-                </Link>
-                
-            </div>
-        </div>
-    )
+export default function Navbar() {
+  return (
+    <nav className="flex items-center justify-between px-6 md:px-12 h-20 border-b border-border">
+      <Link href="/">
+        <Logo />
+      </Link>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/sign-in"
+          className="font-mono text-sm text-muted hover:text-foreground transition-colors px-4 py-2"
+        >
+          Sign in
+        </Link>
+        <Link
+          href="/sign-up"
+          className="font-mono text-sm bg-signal text-background font-medium px-5 py-2 rounded-full hover:bg-signal/90 transition-colors"
+        >
+          Get started
+        </Link>
+      </div>
+    </nav>
+  );
 }

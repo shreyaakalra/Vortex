@@ -45,6 +45,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      
 
       <footer className="border-t border-border px-6 md:px-12 py-6 flex items-center justify-between">
         <span className="font-mono text-xs text-muted">

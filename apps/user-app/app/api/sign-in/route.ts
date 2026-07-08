@@ -49,7 +49,7 @@ export async function POST(req: NextRequest){
         )
 
         const response = NextResponse.json(
-            { message: "user added" },
+            { message: "signed in successfully" },
             { status: 201 }
         )
 

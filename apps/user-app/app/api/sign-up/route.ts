@@ -74,7 +74,7 @@ export async function POST(request: Request){
 
         const response = NextResponse.json(
             { message: "user added" },
-            { status: 201 } // 201 Created is more accurate for a new resource
+            { status: 201 }
         )
 
         response.cookies.set('token', token, {

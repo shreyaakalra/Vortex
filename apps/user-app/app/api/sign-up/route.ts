@@ -69,16 +69,23 @@ export async function POST(request: Request){
         const token = jwt.sign(
             {id: newUser.id},
             key,
-            {expiresIn: "1h"}
+            {expiresIn: "7d"}
         )
 
-        return NextResponse.json(
-            {
-                token: token,
-                message: "user added"
-            },
-            {status: 200}
+        const response = NextResponse.json(
+            { message: "user added" },
+            { status: 201 } // 201 Created is more accurate for a new resource
         )
+
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 60 * 60 * 24 * 7, 
+        })
+
+        return response;
 
     } catch(error){
         console.log(error);

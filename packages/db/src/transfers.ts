@@ -86,7 +86,11 @@ export default async function transferMoney(fromUserID: number, toUserID: number
 
             return ledgerEntry;
 
-        })
+        }, {
+            maxWait: 15000,
+            timeout: 15000,
+        }
+    )
 
         return {success: true, ledgerEntry: result};
 
@@ -95,4 +99,3 @@ export default async function transferMoney(fromUserID: number, toUserID: number
     }
 }
 
-export { default as transferMoney } from "./transfers.js";

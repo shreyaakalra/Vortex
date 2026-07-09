@@ -11,5 +11,5 @@ export const prisma = globalForPrisma.prisma || new PrismaClient({ adapter });
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export { default as transferMoney } from "./transfers.js";
-
+export { default as onRampTransfer } from "./onramp.js";
       

@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Balance
@@ -289,7 +289,7 @@ export type BalanceScalarWhereWithAggregatesInput = {
 }
 
 export type BalanceCreateInput = {
-  amount: number
+  amount?: number
   locked?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -298,7 +298,7 @@ export type BalanceCreateInput = {
 
 export type BalanceUncheckedCreateInput = {
   id?: number
-  amount: number
+  amount?: number
   locked?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -324,7 +324,7 @@ export type BalanceUncheckedUpdateInput = {
 
 export type BalanceCreateManyInput = {
   id?: number
-  amount: number
+  amount?: number
   locked?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -426,7 +426,7 @@ export type BalanceUncheckedUpdateOneWithoutUserNestedInput = {
 }
 
 export type BalanceCreateWithoutUserInput = {
-  amount: number
+  amount?: number
   locked?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -434,7 +434,7 @@ export type BalanceCreateWithoutUserInput = {
 
 export type BalanceUncheckedCreateWithoutUserInput = {
   id?: number
-  amount: number
+  amount?: number
   locked?: number
   createdAt?: Date | string
   updatedAt?: Date | string

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
@@ -12,4 +12,3 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export { default as transferMoney } from "./transfers";
 export { default as onRampTransfer } from "./onramp";
-        

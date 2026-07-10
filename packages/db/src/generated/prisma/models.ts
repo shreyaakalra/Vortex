@@ -8,8 +8,8 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User.js'
-export type * from './models/Balance.js'
-export type * from './models/OnRampTransaction.js'
-export type * from './models/Ledger.js'
-export type * from './commonInputTypes.js'
+export type * from './models/User'
+export type * from './models/Balance'
+export type * from './models/OnRampTransaction'
+export type * from './models/Ledger'
+export type * from './commonInputTypes'

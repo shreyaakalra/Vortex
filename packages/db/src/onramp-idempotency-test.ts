@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { prisma } from "./index.js";
-import onRampTransfer from "./onramp.js";
+import { prisma } from "./index";
+import onRampTransfer from "./onramp";
 
 const TEST_TOKEN = `test-token-${Date.now()}`;
 const AMOUNT = 500;

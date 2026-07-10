@@ -1,5 +1,5 @@
 import type { Balance } from "@prisma/client";
-import { prisma } from "./index.js";
+import { prisma } from "./index";
 
 export default async function transferMoney(fromUserID: number, toUserID: number, amount: number){
     try{

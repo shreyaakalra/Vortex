@@ -1,5 +1,5 @@
-import { prisma } from "./index.js";
-import transferMoney from "./transfers.js";
+import { prisma } from "./index";
+import transferMoney from "./transfers";
 
 const NUM_TRANSFERS = 20;
 const AMOUNT_PER_TRANSFER = 100;

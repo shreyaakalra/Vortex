@@ -8,8 +8,7 @@ export const userSchema = z.object({
         .email("Please enter a valid email."),
 
     number: z.string()
-        .min(10, "phone number should have 10 digits.")
-        .max(10, "phone number should have 10 digits."),
+        .regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
 
     password: z.string()
         .min(6, "password should be minimum 6 characters")
@@ -17,8 +16,9 @@ export const userSchema = z.object({
 
 export const transferSchema = z.object({
     number: z.string()
-        .min(10, "Phone number cannot have less than 10 digits")
-        .max(10, "Phone number cannot have greater than 10 digits"),
+        .regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
 
     amount: z.number()
+        .positive("You can't send negative money.")
+        .max(50000, "You can't send more than ₹50,000.")
 })

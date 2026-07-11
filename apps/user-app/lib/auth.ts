@@ -17,7 +17,6 @@ export function getUserIdFromRequest(request: NextRequest): number | null {
   const key = process.env.SECRET_KEY;
 
   if (!key) {
-    // Misconfigured server treat as unauthenticated rather than crashing
     console.error("SECRET_KEY is not set in environment variables");
     return null;
   }

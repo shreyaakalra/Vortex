@@ -58,7 +58,7 @@ export async function POST(req: NextRequest){
         }
 
         return NextResponse.json(
-            {message: "Payment Successful", result},
+            {success: true, message: "Payment Successful", result},
             {status: 201}
         )
 

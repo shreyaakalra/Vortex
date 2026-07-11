@@ -22,7 +22,8 @@ export function middleware(request: NextRequest) {
 // Add more protected page paths here as you build them.
 export const config = {
   matcher: [
-    "/dashboard/home/:path*",
-    "/api/transfer/:path*"
+    "/dashboard/:path*",
+    "/api/transfer/:path*",
+    "/api/user/:path*"
   ],
 }; 

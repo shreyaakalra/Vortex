@@ -26,8 +26,7 @@ export function getUserIdFromRequest(request: NextRequest): number | null {
     const decoded = jwt.verify(token, key) as DecodedToken;
     return decoded.id;
   } catch (error) {
-    // Covers: expired token, invalid signature, malformed token — all
-    // treated the same way, as "not authenticated"
+    console.log(error);
     return null;
   }
 }

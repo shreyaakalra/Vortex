@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { userSchema } from "../schema";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -7,7 +7,7 @@ import "dotenv/config"
 import { prisma } from "@vortex/db";
 
 
-export async function POST(request: Request){
+export async function POST(request: NextRequest){
     try{
         const body = await request.json();
 

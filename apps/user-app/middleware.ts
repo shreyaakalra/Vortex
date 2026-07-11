@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
+  
   const token = request.cookies.get("token");
 
   // No cookie at all — not logged in, kick to sign-in
@@ -20,5 +21,8 @@ export function middleware(request: NextRequest) {
 // Right now: only /dashboard and anything under it.
 // Add more protected page paths here as you build them.
 export const config = {
-  matcher: ["/dashboard/home/:path*"],
-};
+  matcher: [
+    "/dashboard/home/:path*",
+    "/api/transfer/:path*"
+  ],
+}; 

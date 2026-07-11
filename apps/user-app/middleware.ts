@@ -20,5 +20,5 @@ export function middleware(request: NextRequest) {
 // Right now: only /dashboard and anything under it.
 // Add more protected page paths here as you build them.
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/home/:path*"],
 };

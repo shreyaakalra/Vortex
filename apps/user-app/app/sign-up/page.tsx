@@ -66,7 +66,7 @@ export default function SignUp() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/dashboard/home");
     } catch (e) {
       console.log(e);
       setError({ form: "Network error. Please try again." });

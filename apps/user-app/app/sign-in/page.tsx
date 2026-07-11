@@ -34,7 +34,7 @@ export default function SignIn() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/dashboard/home");
 
     } catch (e) {
       console.log(e);

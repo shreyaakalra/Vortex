@@ -144,7 +144,7 @@ export default function Transactions() {
                     : "bg-foreground/5 text-muted"
                 }`}
               >
-                {tx.name[0].toUpperCase()}
+                {tx.name ? tx.name[0]?.toUpperCase() : ''}
               </div>
               <div>
                 <div className="font-body text-sm text-foreground">{tx.name}</div>

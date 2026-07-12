@@ -83,6 +83,9 @@ export default async function onRampTransfer(token: string, amount: number, stat
             });
 
             return ledgerEntry;
+        },{
+            maxWait: 15000,
+            timeout: 15000,
         });
 
         if (result && "alreadyProcessed" in result) {
@@ -96,6 +99,7 @@ export default async function onRampTransfer(token: string, amount: number, stat
         return { success: true, ledgerEntry: result };
 
     }catch(e: any){
+        console.error("onRampTransfer failed:", e);
         return {success: false, message: e.message || "an error has occured"}
     }
 

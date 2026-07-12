@@ -1,10 +1,4 @@
-// 1. get the secret
-// 2. get the signature from headers
-// 3. get rawBody
-// 4. verify the signature
-// 5. get token amount and status
-// 6. do an on ramp transfer
-// 7. return the result
+
 
 import express from "express";
 import "dotenv/config";
@@ -21,6 +15,7 @@ app.use(express.json({
 }));
 
 app.post("/webhook/onramp", async (req, res) => {
+  
   try {
     const secret = process.env.BANK_WEBHOOK_SECRET;
     if (!secret) {
@@ -34,6 +29,7 @@ app.post("/webhook/onramp", async (req, res) => {
     }
 
     const rawBody = (req as any).rawBody;
+
     const isValid = verifySignature(rawBody, signature, secret);
 
     if (!isValid) {
@@ -46,11 +42,13 @@ app.post("/webhook/onramp", async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    
     const result = await onRampTransfer(token, amount, status);
 
     if (!result.success) {
       return res.status(400).json(result);
     }
+    console.log("Returning 200 with result:", result);
 
     return res.status(200).json(result);
   } catch (err) {

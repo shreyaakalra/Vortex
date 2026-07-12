@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserIdFromRequest } from "../../../../lib/auth";
+import { getUserIdFromRequest } from "../../../lib/auth";
 import crypto from "crypto";
 import { prisma } from "@vortex/db";
 import "dotenv/config";
@@ -67,6 +67,10 @@ export async function POST(req: NextRequest){
             )
         }
 
+        console.log("Payload:", payloadString);
+        console.log("Signature:", signature);
+        console.log("Secret used:", secret);
+
         const webhookResponse = await fetch(`${URI}/webhook/onramp`, {
             method: "POST",
             headers: {
@@ -80,19 +84,26 @@ export async function POST(req: NextRequest){
 
         const webhookResult = await webhookResponse.json();
 
+        console.log("Webhook response status:", webhookResponse.status);
+        console.log("Webhook response ok:", webhookResponse.ok);
+        console.log("Webhook result:", webhookResult);
+
         if (!webhookResponse.ok) {
             return NextResponse.json(
-                { message: "Something went wrong", error: webhookResult.message },
+                { message: webhookResult.message || "Bank rejected the request" },
                 { status: 400 }
             );
         }
 
+        
+
         return NextResponse.json(
-            { webhookResult },
+            { success: true, webhookResult },
             { status: 200 }
         );
 
-    }catch(e){
+    }catch(e:any){
+        console.log(e.message);
         return NextResponse.json(
             {message: "Internal server error"},
             {status: 500}

@@ -6,7 +6,7 @@ import AddMoney from "./add-money";
 import SendMoney from "./send-money";
 import WithdrawMoney from "./withdraw-money";
 
-const tabs = ["Send", "Add money", "Withdraw"] as const;
+const tabs = ["Send", "Add money"] as const;
 type Tab = (typeof tabs)[number];
 
 export default function Transfer() {
@@ -56,7 +56,9 @@ export default function Transfer() {
         >
           {activeTab === "Send" && <SendMoney />}
           {activeTab === "Add money" && <AddMoney />}
+          {/*
           {activeTab === "Withdraw" && <WithdrawMoney />}
+          */}
         </motion.div>
       </AnimatePresence>
 

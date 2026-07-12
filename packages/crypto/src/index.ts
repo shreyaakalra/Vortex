@@ -1,5 +1,6 @@
 // making this to verify if its truly the bank that's sending the webhook
-import crypto from "crypto";
+
+import crypto from "crypto"
 
 export function computeSignature(payload: string, secret:string) : string {
     return crypto.createHmac("sha256", secret).update(payload).digest("hex");

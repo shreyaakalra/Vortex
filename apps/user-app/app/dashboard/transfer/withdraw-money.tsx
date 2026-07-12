@@ -1,6 +1,11 @@
+"use client"
+
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function WithdrawMoney(){
+    const[amount, setAmount] = useState("");
+    
     return(
         <motion.div
               key="withdraw"
@@ -25,10 +30,24 @@ export default function WithdrawMoney(){
                     </span>
                     <input
                       type="text"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
                       placeholder="0.00"
                       className="bg-background border border-border rounded-lg h-11 pl-8 pr-4 w-full font-body text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-signal transition-colors"
                     />
                   </div>
+                </div>
+
+                <div className="flex gap-2">
+                  {["500", "1000", "2000", "5000"].map((amt) => (
+                    <button
+                      key={amt}
+                      className="font-mono text-xs border border-border text-muted px-3.5 py-2 rounded-full cursor-pointer hover:border-signal hover:text-signal transition-colors"
+                      onClick={() => setAmount(amt)}
+                    >
+                      ₹{amt}
+                    </button>
+                  ))}
                 </div>
 
                 <div className="border-t border-border pt-5">

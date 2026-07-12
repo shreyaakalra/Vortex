@@ -9,7 +9,7 @@
 import express from "express";
 import "dotenv/config";
 import { onRampTransfer } from "@vortex/db";
-import { verifySignature } from "./verifySignature.js";
+import { verifySignature } from "@vortex/crypto"
 
 const app = express();
 const PORT = process.env.PORT || 5002;

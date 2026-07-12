@@ -4,44 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { AreaChart, Area, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 
-const balanceHistory = [
-  { day: "Mon", value: 1800 },
-  { day: "Tue", value: 2100 },
-  { day: "Wed", value: 1950 },
-  { day: "Thu", value: 3200 },
-  { day: "Fri", value: 2900 },
-  { day: "Sat", value: 2600 },
-  { day: "Sun", value: 2450 },
-];
-
-const recentActivity = [
-  {
-    name: "arjun.k",
-    time: "today, 2:14 pm",
-    amount: "+₹1,200.00",
-    direction: "in",
-  },
-  {
-    name: "the chai stall",
-    time: "today, 9:02 am",
-    amount: "−₹40.00",
-    direction: "out",
-  },
-  {
-    name: "rohan.v",
-    time: "yesterday, 6:40 pm",
-    amount: "−₹850.00",
-    direction: "out",
-  },
-];
-
-const quickActions = [
-  { label: "send", icon: "ti-arrow-up-right", primary: true },
-  { label: "add money", icon: "ti-download", primary: false },
-  { label: "withdraw", icon: "ti-upload", primary: false },
-];
-
-interface userType {
+interface UserType {
   id?: number;
   name?: string;
   email?: string;
@@ -52,22 +15,53 @@ interface userType {
   };
 }
 
+interface HistoryPoint {
+  day: string;
+  value: number;
+}
+
+interface ActivityItem {
+  name: string;
+  time: string;
+  amount: string;
+  direction: "in" | "out";
+}
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "good morning";
+  if (hour < 17) return "good afternoon";
+  return "good evening";
+}
+
 export default function DashboardHome() {
-  const [user, setUser] = useState<userType>({});
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<UserType>({});
+  const [history, setHistory] = useState<HistoryPoint[]>([]);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUsers() {
+    async function fetchDashboard() {
       try {
         setLoading(true);
-        const response = await fetch("/api/user/info");
 
-        if (!response.ok) {
+        const [userRes, activityRes] = await Promise.all([
+          fetch("/api/user/info"),
+          fetch("/api/user/activity"),
+        ]);
+
+        if (!userRes.ok) {
           throw new Error("Something went wrong!");
         }
 
-        const data = await response.json();
-        setUser(data.user);
+        const userData = await userRes.json();
+        setUser(userData.user ?? {});
+
+        if (activityRes.ok) {
+          const activityData = await activityRes.json();
+          setHistory(activityData.history ?? []);
+          setActivity(activityData.activity ?? []);
+        }
       } catch (e) {
         console.log(e);
       } finally {
@@ -75,11 +69,11 @@ export default function DashboardHome() {
       }
     }
 
-    fetchUsers();
+    fetchDashboard();
   }, []);
 
   return (
-    <div className="px-10 py-8">
+    <div className="px-5 sm:px-8 lg:px-10 py-6 lg:py-8">
       {loading ? (
         <div className="flex flex-col items-center justify-center gap-3 h-[70vh]">
           <motion.div
@@ -93,52 +87,32 @@ export default function DashboardHome() {
         </div>
       ) : (
         <div>
-          <div className="mb-7">
+          <div className="mb-6 lg:mb-7">
             <span className="font-mono text-xs text-signal tracking-widest uppercase">
-              good afternoon
+              {getGreeting()}
             </span>
-            <h1 className="font-display text-2xl font-bold text-foreground mt-1.5">
-              Welcome back {user.name}
+            <h1 className="font-display text-xl sm:text-2xl font-bold text-foreground mt-1.5">
+              Welcome back{user.name ? `, ${user.name}` : ""}
             </h1>
           </div>
 
-          <div className="grid grid-cols-[1fr_320px] gap-5 mb-6">
+          <div className="mb-6">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35 }}
-              className="bg-surface border border-border rounded-2xl p-7"
+              className="bg-surface border border-border rounded-2xl p-5 sm:p-7"
             >
               <span className="font-mono text-xs text-muted tracking-wide">
                 available balance
               </span>
-              <div className="font-display font-bold text-4xl text-foreground mt-2">
-                ₹{(user.balance?.amount ?? 0).toLocaleString('en-IN')}
+              <div className="font-display font-bold text-3xl sm:text-4xl text-foreground mt-2">
+                ₹{(user.balance?.amount ?? 0).toLocaleString("en-IN")}
               </div>
-              <div className="flex gap-3 mt-5 mb-2">
-                {quickActions.map((action) => (
-                  <motion.button
-                    key={action.label}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`font-mono text-xs px-5 py-2.5 rounded-full flex items-center gap-1.5 ${
-                      action.primary
-                        ? "bg-signal text-background font-medium"
-                        : "text-foreground border border-border"
-                    }`}
-                  >
-                    <i
-                      className={`ti ${action.icon} text-sm`}
-                      aria-hidden="true"
-                    />
-                    {action.label}
-                  </motion.button>
-                ))}
-              </div>
-
+              
               <div className="mt-4 -mx-2">
                 <ResponsiveContainer width="100%" height={100}>
-                  <AreaChart data={balanceHistory}>
+                  <AreaChart data={history}>
                     <defs>
                       <linearGradient
                         id="balanceFill"
@@ -177,6 +151,7 @@ export default function DashboardHome() {
                         fontSize: 11,
                         fontFamily: "JetBrains Mono",
                       }}
+                      formatter={(value) => [`₹${Number(value ?? 0).toLocaleString("en-IN")}`, "balance"]}
                     />
                     <Area
                       type="monotone"
@@ -189,109 +164,68 @@ export default function DashboardHome() {
                 </ResponsiveContainer>
               </div>
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.08 }}
-              className="flex flex-col gap-4"
-            >
-              <div className="bg-surface border border-border rounded-2xl p-6">
-                <span className="font-mono text-[11px] text-muted tracking-wide uppercase">
-                  this month
-                </span>
-                <div className="flex items-baseline gap-2 mt-2">
-                  <span className="font-display font-bold text-xl text-signal">
-                    +₹6,500
-                  </span>
-                  <span className="font-mono text-[10.5px] text-muted">
-                    received
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-display font-bold text-xl text-foreground">
-                    −₹15,890
-                  </span>
-                  <span className="font-mono text-[10.5px] text-muted">
-                    sent
-                  </span>
-                </div>
-              </div>
-
-              <div className="bg-surface border border-border rounded-2xl p-6">
-                <span className="font-mono text-[11px] text-muted tracking-wide uppercase">
-                  quick scan
-                </span>
-                <div className="flex items-center justify-center py-4">
-                  <div className="w-20 h-20 rounded-lg border border-border flex items-center justify-center">
-                    <i
-                      className="ti ti-qrcode text-3xl text-muted"
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-                <p className="font-body text-xs text-muted text-center leading-relaxed">
-                  Scan a QR to pay a merchant instantly.
-                </p>
-              </div>
-            </motion.div>
           </div>
 
           <div className="flex items-center justify-between mb-3.5">
             <span className="font-mono text-xs text-muted tracking-wide uppercase">
               recent activity
             </span>
-            <span className="font-mono text-xs text-signal cursor-pointer">
-              view all
-            </span>
           </div>
 
           <div className="bg-surface border border-border rounded-xl overflow-hidden">
-            {recentActivity.map((tx, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.25, delay: i * 0.05 }}
-                className={`flex items-center justify-between px-4.5 py-3.5 ${
-                  i !== recentActivity.length - 1
-                    ? "border-b border-border/50"
-                    : ""
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      tx.direction === "in" ? "bg-signal/10" : "bg-foreground/5"
-                    }`}
-                  >
-                    <i
-                      className={`ti ${
-                        tx.direction === "in"
-                          ? "ti-arrow-down-left"
-                          : "ti-arrow-up-right"
-                      } text-sm ${tx.direction === "in" ? "text-signal" : "text-muted"}`}
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-body text-sm text-foreground">
-                      {tx.name}
-                    </div>
-                    <div className="font-mono text-[10.5px] text-muted">
-                      {tx.time}
-                    </div>
-                  </div>
-                </div>
-                <span
-                  className={`font-mono text-sm ${
-                    tx.direction === "in" ? "text-signal" : "text-foreground"
+            {activity.length === 0 ? (
+              <div className="px-4.5 py-6 text-center">
+                <span className="font-body text-sm text-muted">
+                  No transactions yet this week.
+                </span>
+              </div>
+            ) : (
+              activity.map((tx, i) => (
+                <motion.div
+                  key={`${tx.name}-${tx.time}-${i}`}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.25, delay: i * 0.05 }}
+                  className={`flex items-center justify-between gap-3 px-3.5 sm:px-4.5 py-3.5 ${
+                    i !== activity.length - 1
+                      ? "border-b border-border/50"
+                      : ""
                   }`}
                 >
-                  {tx.amount}
-                </span>
-              </motion.div>
-            ))}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div
+                      className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center ${
+                        tx.direction === "in" ? "bg-signal/10" : "bg-foreground/5"
+                      }`}
+                    >
+                      <i
+                        className={`ti ${
+                          tx.direction === "in"
+                            ? "ti-arrow-down-left"
+                            : "ti-arrow-up-right"
+                        } text-sm ${tx.direction === "in" ? "text-signal" : "text-muted"}`}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-body text-sm text-foreground truncate">
+                        {tx.name}
+                      </div>
+                      <div className="font-mono text-[10.5px] text-muted">
+                        {tx.time}
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    className={`font-mono text-sm shrink-0 ${
+                      tx.direction === "in" ? "text-signal" : "text-foreground"
+                    }`}
+                  >
+                    {tx.amount}
+                  </span>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       )}

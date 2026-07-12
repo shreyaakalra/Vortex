@@ -11,6 +11,10 @@ const recentRecipients = [
   { name: "Priya", number: "9898989898" },
 ];
 
+useEffect(() => {
+  async function()
+})
+
 export default function SendMoney() {
   const [number, setNumber] = useState("");
   const [amount, setAmount] = useState("");

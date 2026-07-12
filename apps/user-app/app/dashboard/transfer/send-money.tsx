@@ -1,19 +1,10 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { Check, AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, AlertCircle, Users } from "lucide-react";
 
-const recentRecipients = [
-  { name: "Vivek", number: "9717422883" },
-  { name: "Kavita", number: "9656561568" },
-  { name: "Rohan", number: "9812345678" },
-  { name: "Priya", number: "9898989898" },
-];
-
-useEffect(() => {
-  async function()
-})
+type Recipient = { name: string; number: string };
 
 export default function SendMoney() {
   const [number, setNumber] = useState("");
@@ -22,12 +13,34 @@ export default function SendMoney() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [recipients, setRecipients] = useState<Recipient[]>([]);
+  const [loadingRecipients, setLoadingRecipients] = useState(true);
+
+  useEffect(() => {
+    async function getRecipients() {
+      try {
+        const result = await fetch("/api/user/recipients");
+
+        if (!result.ok) {
+          throw new Error("Something went wrong!");
+        }
+
+        const data = await result.json();
+        setRecipients(data.recipients);
+      } catch (e) {
+        console.log(e);
+        setRecipients([]);
+      } finally {
+        setLoadingRecipients(false);
+      }
+    }
+    getRecipients();
+  }, []);
 
   async function sendMoney() {
     setError("");
     setSuccess(false);
 
-    // Validate before hitting the network
     const trimmedNumber = number.trim();
     if (!/^\d{10}$/.test(trimmedNumber)) {
       setError("Enter a valid 10-digit phone number");
@@ -49,7 +62,6 @@ export default function SendMoney() {
         body: JSON.stringify({ number: trimmedNumber, amount: parsedAmount }),
       });
 
-      // Guard against non-JSON responses (e.g. a 500 HTML error page)
       let data;
       try {
         data = await response.json();
@@ -77,7 +89,8 @@ export default function SendMoney() {
     setSuccess(false);
   }
 
-  const canSubmit = number.trim().length > 0 && amount.trim().length > 0 && !submitting;
+  const canSubmit =
+    number.trim().length > 0 && amount.trim().length > 0 && !submitting;
 
   return (
     <div className="px-10 py-8 max-w-2xl">
@@ -91,7 +104,6 @@ export default function SendMoney() {
       </div>
 
       <AnimatePresence mode="wait">
-
         {success ? (
           <motion.div
             key="success"
@@ -138,28 +150,52 @@ export default function SendMoney() {
               quick send
             </span>
 
-            <div className="flex gap-3 mb-7">
-              {recentRecipients.map((r) => (
-                <motion.button
-                  key={r.number}
-                  type="button"
-                  onClick={() => setNumber(r.number)}
-                  whileHover={{ y: -3 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="flex flex-col items-center gap-2 bg-transparent border-none p-0 cursor-pointer"
-                >
-                  <div className="w-12 h-12 rounded-full bg-signal/10 flex items-center justify-center font-mono text-sm text-signal">
-                    {r.name[0]}
+            {loadingRecipients ? (
+              <div className="flex gap-3 mb-7">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="flex flex-col items-center gap-2">
+                    <div className="w-12 h-12 rounded-full bg-border animate-pulse" />
+                    <div className="w-8 h-2.5 rounded bg-border animate-pulse" />
                   </div>
-                  <span className="font-mono text-[10.5px] text-muted">
-                    {r.name}
+                ))}
+              </div>
+            ) : recipients.length === 0 ? (
+              <div className="flex items-center gap-3 mb-7 bg-background border border-border rounded-xl px-4 py-3.5">
+                <div className="w-9 h-9 rounded-full bg-signal/10 flex items-center justify-center shrink-0">
+                  <Users className="text-signal" size={16} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-mono text-xs text-foreground">
+                    No recent recipients yet
                   </span>
-                </motion.button>
-              ))}
-            </div>
+                  <span className="font-body text-[11px] text-muted">
+                    People you send money to will show up here for quick access.
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-3 mb-7">
+                {recipients.map((r) => (
+                  <motion.button
+                    key={r.number}
+                    type="button"
+                    onClick={() => setNumber(r.number)}
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="flex flex-col items-center gap-2 bg-transparent border-none p-0 cursor-pointer"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-signal/10 flex items-center justify-center font-mono text-sm text-signal">
+                      {r.name[0]}
+                    </div>
+                    <span className="font-mono text-[10.5px] text-muted">
+                      {r.name}
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+            )}
 
             <div className="border-t border-border pt-6 flex flex-col gap-5">
-
               <AnimatePresence>
                 {error && (
                   <motion.div
@@ -168,7 +204,10 @@ export default function SendMoney() {
                     exit={{ opacity: 0, height: 0 }}
                     className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 flex items-start gap-3 overflow-hidden"
                   >
-                    <AlertCircle className="text-red-400 shrink-0 mt-0.5" size={14} />
+                    <AlertCircle
+                      className="text-red-400 shrink-0 mt-0.5"
+                      size={14}
+                    />
                     <div className="flex flex-col">
                       <span className="font-mono text-xs text-red-400 font-medium">
                         Transaction failed
@@ -188,7 +227,9 @@ export default function SendMoney() {
                 <input
                   type="text"
                   value={number}
-                  onChange={(e) => setNumber(e.target.value.replace(/[^\d]/g, "").slice(0, 10))}
+                  onChange={(e) =>
+                    setNumber(e.target.value.replace(/[^\d]/g, "").slice(0, 10))
+                  }
                   placeholder="10-digit number"
                   inputMode="numeric"
                   className="bg-background border border-border rounded-lg h-11 px-4 font-body text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-signal transition-colors"
@@ -219,7 +260,8 @@ export default function SendMoney() {
 
               <div className="flex flex-col gap-2">
                 <label className="font-mono text-xs text-muted tracking-wide uppercase">
-                  Note <span className="text-muted/50 normal-case">(optional)</span>
+                  Note{" "}
+                  <span className="text-muted/50 normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
@@ -239,9 +281,7 @@ export default function SendMoney() {
               >
                 {submitting ? "Sending..." : "Send money"}
               </motion.button>
-
             </div>
-            
           </motion.div>
         )}
       </AnimatePresence>

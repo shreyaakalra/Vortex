@@ -7,9 +7,7 @@ import SendMoney from "./send-money";
 import WithdrawMoney from "./withdraw-money";
 
 const tabs = ["Send", "Add money", "Withdraw"] as const;
-type Tab = string;
-
-
+type Tab = (typeof tabs)[number];
 
 export default function Transfer() {
   const [activeTab, setActiveTab] = useState<Tab>("Send");
@@ -48,54 +46,20 @@ export default function Transfer() {
         ))}
       </div>
 
-      <div className="grid grid-cols-[1fr_360px] gap-6 items-start">
-
-        <AnimatePresence mode="wait">
-          {activeTab === "Send" && (
-            <SendMoney />
-          )}
-
-          {activeTab === "Add money" && (
-            <AddMoney />
-          )}
-
-          {activeTab === "Withdraw" && (
-            <WithdrawMoney />
-          )}
-        </AnimatePresence>
-
+      <AnimatePresence mode="wait">
         <motion.div
+          key={activeTab}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.08 }}
-          className="flex flex-col gap-4"
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
         >
-          <div className="bg-surface border border-border rounded-2xl p-6">
-            <span className="font-mono text-xs text-muted tracking-wide uppercase">
-              available balance
-            </span>
-            <div className="font-display font-bold text-2xl text-foreground mt-2">
-              ₹2,450.00
-            </div>
-          </div>
-
-          <div className="bg-surface border border-border rounded-2xl p-6">
-            <span className="font-mono text-xs text-muted tracking-wide uppercase">
-              daily transfer limit
-            </span>
-            <div className="font-display font-bold text-2xl text-foreground mt-2">
-              ₹50,000
-            </div>
-            <div className="w-full h-1.5 bg-border rounded-full mt-4 overflow-hidden">
-              <div className="h-full bg-signal rounded-full" style={{ width: "18%" }} />
-            </div>
-            <div className="font-mono text-[10.5px] text-muted mt-2">
-              ₹9,200 used today
-            </div>
-          </div>
+          {activeTab === "Send" && <SendMoney />}
+          {activeTab === "Add money" && <AddMoney />}
+          {activeTab === "Withdraw" && <WithdrawMoney />}
         </motion.div>
+      </AnimatePresence>
 
-      </div>
     </div>
   );
 }

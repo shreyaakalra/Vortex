@@ -56,7 +56,7 @@ export default function DashboardLayout({
     <div className="min-h-screen flex bg-background">
       <aside
         ref={sidebarRef}
-        className={`${isOpen ? "w-80" : "w-18"} border-r border-border px-4 py-6 flex flex-col justify-between shrink-0`}
+        className={`${isOpen ? "w-70" : "w-18"} border-r border-border px-4 py-6 flex flex-col justify-between shrink-0`}
       >
         {isOpen ? (
           <div className="flex flex-col justify-between h-full">
@@ -68,7 +68,7 @@ export default function DashboardLayout({
                   </span>
                 </Link>
                 <button onClick={collapsibleNavbar}>
-                  <TextAlignJustify />
+                  <TextAlignJustify size={25} />
                 </button>
               </div>
 

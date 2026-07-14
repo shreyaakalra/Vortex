@@ -1,62 +1,27 @@
-"use client"
-
 import Navbar from "../components/Navbar";
 import Image from "next/image";
-import Features from "../components/Features";
 import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import Footer from "../components/Footer";
-import FeatureGrid from "../components/FeatureGrid";
-import HowItWorks from "../components/HowItWorks";
-import { motion, type Variants } from "framer-motion";
-
-const heroContainer: Variants = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.05 },
-  },
-};
-
-const heroItem: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
-
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 24, scale: 0.98 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, delay: 0.3 + i * 0.12, ease: [0.16, 1, 0.3, 1] as const },
-  }),
-};
 
 export default function Home() {
   return (
-    <div className="flex flex-col bg-background bg-[radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:16px_16px] relative overflow-hidden">
+    <div className="flex flex-col bg-background bg-[radial-gradient(#ffffff11_1px,transparent_1px)] bg-size-[16px_16px] relative overflow-hidden">
       <Navbar />
 
       <main className="min-h-[calc(100vh-88px)] flex flex-col justify-center px-8 md:px-16 xl:px-24 relative z-10">
         
-        {/* Ambient Background Glow: Positioned behind the text */}
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-signal/20 rounded-full blur-[128px] -z-10 pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-100 h-100 bg-signal/20 rounded-full blur-[128px] -z-10 pointer-events-none" />
 
-        <div className="max-w-[1500px] w-full mx-auto lg:grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-375 w-full mx-auto lg:grid lg:grid-cols-2 gap-16 items-center">
 
-          {/*Left side*/}
           <div className="flex flex-col gap-6">
             <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight text-foreground">
               Money moves
               <br />
               at the speed of
               <br />
-              {/* Applied gradient text to the highlight string */}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-signal to-emerald-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-signal to-emerald-500">
                 a thought.
               </span>
             </h1>
